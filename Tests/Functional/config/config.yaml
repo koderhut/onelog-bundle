@@ -1,0 +1,3 @@
+onelog:
+    logger_service: 'logger'
+    register_global: true

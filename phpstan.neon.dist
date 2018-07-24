@@ -1,0 +1,6 @@
+parameters:
+    autoload_directories:
+        - %currentWorkingDirectory%/
+    excludes_analyse:
+        - %currentWorkingDirectory%/Tests
+        - %currentWorkingDirectory%/vendor
