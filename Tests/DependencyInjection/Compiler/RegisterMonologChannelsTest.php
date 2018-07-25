@@ -28,7 +28,28 @@ class RegisterMonologChannelsTest extends TestCase
      */
     public function testExitEarlyIfNotEnabled()
     {
-        $container = $this->getContainer(['logger_service' => 'logger']);
+        $container = $this->getContainer(['logger_service' => 'monolog.logger']);
+        $container->compile();
+
+        $this->assertTrue($container->hasParameter('onelog.register_monolog_channels'));
+        $this->assertFalse($container->getParameter('onelog.register_monolog_channels'));
+
+        $onelogDefinition = $container->getDefinition(OneLog::class);
+        $args             = $onelogDefinition->getArguments();
+        $methodCalls      = $onelogDefinition->getMethodCalls();
+
+        $this->assertCount(1, $args);
+        $this->assertCount(0, $methodCalls);
+    }
+
+    /**
+     * @test
+     */
+    public function testExitEarlyIfMonologServiceIsNotDefined()
+    {
+        $container = $this->getContainer(['logger_service' => 'monolog.logger']);
+        $container->removeDefinition('monolog.logger');
+        $container->compile();
 
         $this->assertTrue($container->hasParameter('onelog.register_monolog_channels'));
         $this->assertFalse($container->getParameter('onelog.register_monolog_channels'));
@@ -46,7 +67,8 @@ class RegisterMonologChannelsTest extends TestCase
      */
     public function testRegisterAllMonologChannels()
     {
-        $container = $this->getContainer(['logger_service' => 'logger', 'register_monolog_channels' => true]);
+        $container = $this->getContainer(['logger_service' => 'monolog.logger', 'register_monolog_channels' => true]);
+        $container->compile();
 
         $this->assertTrue($container->hasParameter('onelog.register_monolog_channels'));
         $this->assertTrue($container->getParameter('onelog.register_monolog_channels'));
@@ -80,14 +102,12 @@ class RegisterMonologChannelsTest extends TestCase
         $loader    = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../../../Resources/config'));
         $loader->load('onelog.xml');
 
-        $container->addDefinitions(['logger' => $logger]);
+        $container->addDefinitions(['monolog.logger' => $logger]);
         $container->addDefinitions(['monolog.logger.test0' => $logger]);
         $container->addDefinitions(['monolog.logger.test1' => $logger]);
         $container->registerExtension(new OnelogExtension());
         $container->loadFromExtension('onelog', $params);
         $container->addCompilerPass(new RegisterMonologChannels());
-
-        $container->compile();
 
         return $container;
     }
