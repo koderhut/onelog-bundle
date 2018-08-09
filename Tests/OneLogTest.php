@@ -7,6 +7,7 @@ use KoderHut\OnelogBundle\NamedLoggerInterface;
 use KoderHut\OnelogBundle\OneLog;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Prophecy\Argument;
 
 /**
  * Class OneLogTest
@@ -50,12 +51,12 @@ class OneLogTest extends TestCase
     public function testCallingPsrLoggerMethodsOnInstanceAreProxiedToDefaultLogger()
     {
         $mockDefaultLogger = $this->prophesize(LoggerInterface::class);
-        $mockDefaultLogger->debug('test', [])->shouldBeCalled()->willReturn(true);
+        $mockDefaultLogger->debug('test', [])->shouldBeCalled()->willReturn(null);
 
         $instance = new OneLog($mockDefaultLogger->reveal());
 
         $this->assertCount(2, $instance->loggers());
-        $this->assertTrue($instance->debug('test', []));
+        $this->assertNull($instance->debug('test', []));
     }
 
     /**
@@ -63,13 +64,12 @@ class OneLogTest extends TestCase
      */
     public function testCallingPsrLoggerMethodsOnInstancePropertiesProxiesToSpecificLogger()
     {
-        $mockLoggerDefault = $this->mockTestLogger('default', 'debug', ['test', []], true);
-        $mockLoggerApp     = $this->mockTestLogger('app', 'debug', ['test', []], true);
+        $mockLoggerDefault = $this->mockTestLogger('default', 'debug', ['test', []]);
+        $mockLoggerApp     = $this->mockTestLogger('app', 'debug', ['test', []]);
 
         $instance = new OneLog($mockLoggerDefault, $mockLoggerApp);
-
-        $this->assertTrue($instance->app->debug('test', []));
-        $this->assertTrue($instance->default->debug('test', []));
+        $instance->app->debug('test', []);
+        $instance->default->debug('test', []);
     }
 
     /**
@@ -84,41 +84,35 @@ class OneLogTest extends TestCase
         $instance->test;
     }
 
-
     /**
      * Create a mock logger implementing the Psr\LoggerInterface and NamedInterface
      *
      * @param $loggerName
      * @param $method
      * @param $params
-     * @param $return
      *
      * @return NamedLoggerInterface|LoggerInterface
      */
-    private function mockTestLogger($loggerName, $method, $params, $return)
+    private function mockTestLogger($loggerName, $method, $params)
     {
-        $logger = new class($loggerName, $method, $params, $this, $return) implements NamedLoggerInterface, LoggerInterface
+        $logger = new class($loggerName, $method, $params, $this) implements NamedLoggerInterface, LoggerInterface
         {
             private $name;
             private $method;
             private $params;
-            private $return;
             private $assert;
 
             public function __call($method, $params)
             {
                 $this->assert->assertEquals($this->method, $method);
                 $this->assert->assertEquals($this->params, $params);
-
-                return $this->return;
             }
 
-            public function __construct($name, $method, $params, $assert, $return = null)
+            public function __construct($name, $method, $params, $assert)
             {
                 $this->name   = $name;
                 $this->method = $method;
                 $this->params = $params;
-                $this->return = $return;
                 $this->assert = $assert;
             }
 
@@ -129,47 +123,47 @@ class OneLogTest extends TestCase
 
             public function emergency($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('', [$message, $context]);
             }
 
             public function alert($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('', [$message, $context]);
             }
 
             public function critical($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('', [$message, $context]);
             }
 
             public function error($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('', [$message, $context]);
             }
 
             public function warning($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('', [$message, $context]);
             }
 
             public function notice($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('', [$message, $context]);
             }
 
             public function info($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('', [$message, $context]);
             }
 
             public function debug($message, array $context = [])
             {
-                return $this->__call('debug', [$message, $context]);
+                $this->__call('debug', [$message, $context]);
             }
 
             public function log($level, $message, array $context = [])
             {
-                return $this->__call('log', [$message, $context]);
+                $this->__call('log', [$message, $context]);
             }
         };
 

@@ -2,6 +2,7 @@
 
 namespace KoderHut\OnelogBundle\Tests;
 
+use KoderHut\OnelogBundle\Helper\OneLogStatic;
 use KoderHut\OnelogBundle\NamedLoggerInterface;
 use KoderHut\OnelogBundle\OneLog;
 use PHPUnit\Framework\TestCase;
@@ -26,8 +27,9 @@ class OneLogStaticTest extends TestCase
      */
     public function setUp()
     {
-        $mockDefaultLogger = $this->mockTestLogger('app', 'debug', ['test', []], true);
+        $mockDefaultLogger = $this->mockTestLogger('app', 'debug', ['test', []]);
         $this->instance = new OneLog($mockDefaultLogger);
+        OneLogStatic::setInstance($this->instance);
     }
 
     /**
@@ -35,7 +37,7 @@ class OneLogStaticTest extends TestCase
      */
     public function testCallingStaticMethodsOnInstanceProxiesTheCallToDefaultLogger()
     {
-        $this->assertTrue(OneLog::debug('test', []));
+        $this->assertNull(OneLogStatic::debug('test', []));
     }
 
     /**
@@ -43,10 +45,10 @@ class OneLogStaticTest extends TestCase
      */
     public function testCallingStaticInstanceMethodReturnTheOneLogInstance()
     {
-        $instance = OneLog::instance();
+        $instance = OneLogStatic::instance();
         $this->assertInstanceOf(OneLog::class, $instance);
 
-        $this->assertTrue(OneLog::instance()->app->debug('test', []));
+        $this->assertNull(OneLogStatic::instance()->app->debug('test', []));
     }
 
     /**
@@ -54,14 +56,10 @@ class OneLogStaticTest extends TestCase
      */
     public function testGetExceptionWhenOneLogIsNotInstantiatedByAccessedByStaticMethods()
     {
+        OneLogStatic::destroy();
         $this->expectException(\RuntimeException::class);
 
-        $nullLogger = function () {
-            static::$resolved = null;
-        };
-        $nullLogger->call($this->instance);
-
-        OneLog::test('test', []);
+        OneLogStatic::debug('test', []);
     }
 
     /**
@@ -69,14 +67,10 @@ class OneLogStaticTest extends TestCase
      */
     public function testGetExceptionWhenOneLogIsNotInstantiatedByTryingToRetrieveInstanceFromStatic()
     {
+        OneLogStatic::destroy();
         $this->expectException(\RuntimeException::class);
 
-        $nullLogger = function () {
-            static::$resolved = null;
-        };
-        $nullLogger->call($this->instance);
-
-        OneLog::instance();
+        OneLogStatic::instance();
     }
 
     /**
@@ -85,34 +79,29 @@ class OneLogStaticTest extends TestCase
      * @param $loggerName
      * @param $method
      * @param $params
-     * @param $return
      *
      * @return NamedLoggerInterface|LoggerInterface
      */
-    private function mockTestLogger($loggerName, $method, $params, $return)
+    private function mockTestLogger($loggerName, $method, $params)
     {
-        $logger = new class($loggerName, $method, $params, $this, $return) implements NamedLoggerInterface, LoggerInterface
+        $logger = new class($loggerName, $method, $params, $this) implements NamedLoggerInterface, LoggerInterface
         {
             private $name;
             private $method;
             private $params;
-            private $return;
             private $assert;
 
             public function __call($method, $params)
             {
                 $this->assert->assertEquals($this->method, $method);
                 $this->assert->assertEquals($this->params, $params);
-
-                return $this->return;
             }
 
-            public function __construct($name, $method, $params, $assert, $return = null)
+            public function __construct($name, $method, $params, $assert)
             {
                 $this->name   = $name;
                 $this->method = $method;
                 $this->params = $params;
-                $this->return = $return;
                 $this->assert = $assert;
             }
 
@@ -123,47 +112,47 @@ class OneLogStaticTest extends TestCase
 
             public function emergency($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('emergency', [$message, $context]);
             }
 
             public function alert($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('alert', [$message, $context]);
             }
 
             public function critical($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('critical', [$message, $context]);
             }
 
             public function error($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('error', [$message, $context]);
             }
 
             public function warning($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('warning', [$message, $context]);
             }
 
             public function notice($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('notice', [$message, $context]);
             }
 
             public function info($message, array $context = [])
             {
-                return $this->__call('', [$message, $context]);
+                $this->__call('info', [$message, $context]);
             }
 
             public function debug($message, array $context = [])
             {
-                return $this->__call('debug', [$message, $context]);
+                $this->__call('debug', [$message, $context]);
             }
 
             public function log($level, $message, array $context = [])
             {
-                return $this->__call('log', [$message, $context]);
+                $this->__call('log', [$message, $context]);
             }
         };
 
