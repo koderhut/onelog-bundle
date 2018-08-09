@@ -7,6 +7,7 @@ use KoderHut\OnelogBundle\DependencyInjection\Compiler\RegisterMonologChannels;
 use KoderHut\OnelogBundle\Helper\GlobalNamespaceRegister;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use KoderHut\OnelogBundle\Helper\OneLogStatic;
 
 /**
  * Class KoderHut\OnelogBundle
@@ -19,8 +20,8 @@ class OnelogBundle extends Bundle
     {
         if (true === $this->container->getParameter('onelog.register_global')) {
             $onelogService = $this->container->get(OneLog::class);
-            $onelogClass   = get_class($onelogService);
-            GlobalNamespaceRegister::register('\\OneLog', $onelogClass);
+            OneLogStatic::setInstance($onelogService);
+            GlobalNamespaceRegister::register('\\OneLog', OneLogStatic::class);
         }
     }
 

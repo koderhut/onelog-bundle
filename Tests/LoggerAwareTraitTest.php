@@ -3,6 +3,7 @@
 namespace KoderHut\OnelogBundle\Tests;
 
 use KoderHut\OnelogBundle\Helper\NullLogger;
+use KoderHut\OnelogBundle\Helper\OneLogStatic;
 use KoderHut\OnelogBundle\LoggerAwareTrait;
 use KoderHut\OnelogBundle\OneLog;
 use PHPUnit\Framework\TestCase;
@@ -43,6 +44,8 @@ class LoggerAwareTraitTest extends TestCase
     public function testObjectWillAlwaysReturnALoggerInstance()
     {
         $onelog = new OneLog();
+        OneLogStatic::setInstance($onelog);
+
         $instance = new class {
             use LoggerAwareTrait;
         };

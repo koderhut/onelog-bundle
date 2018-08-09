@@ -2,6 +2,7 @@
 
 namespace KoderHut\OnelogBundle;
 
+use KoderHut\OnelogBundle\Helper\OneLogStatic;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -22,7 +23,7 @@ trait LoggerAwareTrait
     public function logger(): LoggerInterface
     {
         if (null === $this->loggerInstance) {
-            $this->loggerInstance = OneLog::instance()->default;
+            $this->loggerInstance = OneLogStatic::instance()->default;
         }
 
         return $this->loggerInstance;
