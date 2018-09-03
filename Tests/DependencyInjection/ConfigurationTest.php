@@ -34,12 +34,26 @@ class ConfigurationTest extends TestCase
     {
         return [
             'all_configs' => [
-                ['onelog' => ['logger_service' => 'monolog', 'register_global' => true, 'register_monolog_channels' => false]],
-                ['logger_service' => 'monolog', 'register_global' => true, 'register_monolog_channels' => false],
+                ['onelog' => [
+                    'logger_service' => 'monolog',
+                    'register_global' => true,
+                    'register_monolog_channels' => false,
+                ]],
+                [
+                    'logger_service' => 'monolog',
+                    'register_global' => true,
+                    'register_monolog_channels' => false,
+                    'enable_request_id' => true,
+                ],
             ],
             'default_configs' => [
                 ['onelog' => ['logger_service' => null]],
-                ['logger_service' => 'logger', 'register_global' => false, 'register_monolog_channels' => false],
+                [
+                    'logger_service' => 'logger',
+                    'register_global' => false,
+                    'register_monolog_channels' => false,
+                    'enable_request_id' => true,
+                ],
             ],
         ];
     }

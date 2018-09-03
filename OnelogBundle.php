@@ -4,6 +4,7 @@ namespace KoderHut\OnelogBundle;
 
 use KoderHut\OnelogBundle\DependencyInjection\Compiler\LoggerWrapPass;
 use KoderHut\OnelogBundle\DependencyInjection\Compiler\RegisterMonologChannels;
+use KoderHut\OnelogBundle\DependencyInjection\Compiler\RequestIdentifierPass;
 use KoderHut\OnelogBundle\Helper\GlobalNamespaceRegister;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -29,6 +30,7 @@ class OnelogBundle extends Bundle
     {
         $container->addCompilerPass(new LoggerWrapPass());
         $container->addCompilerPass(new RegisterMonologChannels());
+        $container->addCompilerPass(new RequestIdentifierPass());
     }
 
 }

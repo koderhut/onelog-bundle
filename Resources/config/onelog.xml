@@ -11,6 +11,10 @@
                 <service class="KoderHut\OnelogBundle\Helper\NullLogger" public="false" />
             </argument>
         </service>
+
+        <service id="KoderHut\OnelogBundle\Monolog\RequestIdProcessor" class="KoderHut\OnelogBundle\Monolog\RequestIdProcessor" public="false">
+            <tag name="monolog.processor" />
+        </service>
     </services>
 
 </container>

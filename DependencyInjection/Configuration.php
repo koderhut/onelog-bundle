@@ -40,6 +40,11 @@ class Configuration implements ConfigurationInterface
                     ->defaultFalse()
                     ->treatNullLike(false)
                 ->end()
+                ->booleanNode('enable_request_id')
+                    ->info('Add a request identifier to all log entries. Allows for easier tracking of logs during a request')
+                    ->defaultTrue()
+                    ->treatNullLike(true)
+                ->end()
             ->end();
 
         return $treeBuilder;
