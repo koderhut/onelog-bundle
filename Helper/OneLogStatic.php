@@ -65,10 +65,6 @@ class OneLogStatic
      */
     public static function __callStatic(string $level, $params)
     {
-        if (!static::$resolved instanceof OneLog) {
-            throw new \RuntimeException('Logger is not properly instantiated!');
-        }
-
-        return self::$resolved->{$level}(...$params);
+        return self::instance()->{$level}(...$params);
     }
 }
