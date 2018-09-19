@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
  *
  * @author Denis-Florin Rendler <connect@rendler.me>
  */
-class OneLog
+class OneLog implements LoggerInterface
 {
     use PSRLoggerTrait;
 
