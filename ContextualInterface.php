@@ -12,11 +12,11 @@ interface ContextualInterface
     /**
      * Set the context for the logger
      *
-     * @param array $context
+     * @param mixed $context
      *
      * @return mixed
      */
-    public function setContext(array $context);
+    public function setContext($context);
 
     /**
      * Retrieve the context of this class
