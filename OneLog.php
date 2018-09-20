@@ -6,6 +6,7 @@ use KoderHut\OnelogBundle\Exceptions\LoggerNotFoundException;
 use KoderHut\OnelogBundle\Helper\NullLogger;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerTrait;
 
 /**
  * Class OneLog
@@ -14,7 +15,7 @@ use Psr\Log\LoggerInterface;
  */
 class OneLog implements LoggerInterface
 {
-    use PSRLoggerTrait;
+    use LoggerTrait;
 
     public const DEFAULT_LOGGER = 'default';
 
@@ -87,5 +88,50 @@ class OneLog implements LoggerInterface
         }
         
         $this->loggers[$loggerName] = $logger;
+    }
+
+    /**
+     * @param mixed $level
+     * @param mixed $message
+     * @param array $context
+     */
+    public function log($level, $message, array $context = [])
+    {
+        $this->defaultLogger->log($level, $this->processMessage($message), $this->processContext($message, $context));
+    }
+    
+    /**
+     * @param mixed $message
+     * @param array $context
+     *
+     * @return array
+     */
+    public function processContext($message, array $context = []): array
+    {
+        if ($message instanceof \Throwable) {
+            $context = array_merge($context, [
+                'code' => $message->getCode(),
+            ]);
+        }
+
+        if ($message instanceof ContextualInterface) {
+            $context = array_merge($context, $message->getContext());
+        }
+
+        return $context;
+    }
+
+    /**
+     * @param mixed $message
+     * 
+     * @return mixed
+     */
+    public function processMessage($message)
+    {
+        if (!is_object($message)) {
+            return $message;
+        }
+
+        return $message instanceof SimpleMessageInterface ? $message->getMessage() : $message;
     }
 }

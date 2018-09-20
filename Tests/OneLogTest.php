@@ -51,7 +51,7 @@ class OneLogTest extends TestCase
     public function testCallingPsrLoggerMethodsOnInstanceAreProxiedToDefaultLogger()
     {
         $mockDefaultLogger = $this->prophesize(LoggerInterface::class);
-        $mockDefaultLogger->debug('test', [])->shouldBeCalled()->willReturn(null);
+        $mockDefaultLogger->log('debug','test', [])->shouldBeCalled()->willReturn(null);
 
         $instance = new OneLog($mockDefaultLogger->reveal());
 
