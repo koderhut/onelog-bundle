@@ -12,6 +12,7 @@ use Psr\Log\LoggerTrait;
  * Class OneLog
  *
  * @author Denis-Florin Rendler <connect@rendler.me>
+ * @author Joao Jacome <969041+joaojacome@users.noreply.github.com>
  */
 class OneLog implements LoggerInterface
 {
@@ -30,13 +31,21 @@ class OneLog implements LoggerInterface
     private $loggers;
 
     /**
+     * @var MiddlewareProcessor
+     */
+    private $middlewareProcessor;
+
+    /**
      * OneLog constructor.
      *
-     * @param LoggerInterface $default
-     * @param LoggerInterface ...$logger
+     * @param MiddlewareProcessor $middlewareProcessor
+     * @param LoggerInterface     $default
+     * @param LoggerInterface     ...$logger
      */
-    public function __construct(LoggerInterface $default = null, LoggerInterface ...$logger)
+    public function __construct(MiddlewareProcessor $middlewareProcessor, LoggerInterface $default = null, LoggerInterface ...$logger)
     {
+        $this->middlewareProcessor = $middlewareProcessor;
+
         $this->defaultLogger = $default ?? new NullLogger();
         $this->registerLogger($this->defaultLogger, self::DEFAULT_LOGGER);
 
@@ -97,41 +106,7 @@ class OneLog implements LoggerInterface
      */
     public function log($level, $message, array $context = [])
     {
-        $this->defaultLogger->log($level, $this->processMessage($message), $this->processContext($message, $context));
-    }
-    
-    /**
-     * @param mixed $message
-     * @param array $context
-     *
-     * @return array
-     */
-    public function processContext($message, array $context = []): array
-    {
-        if ($message instanceof \Throwable) {
-            $context = array_merge($context, [
-                'code' => $message->getCode(),
-            ]);
-        }
-
-        if ($message instanceof ContextualInterface) {
-            $context = array_merge($context, $message->getContext());
-        }
-
-        return $context;
-    }
-
-    /**
-     * @param mixed $message
-     * 
-     * @return mixed
-     */
-    public function processMessage($message)
-    {
-        if (!is_object($message)) {
-            return $message;
-        }
-
-        return $message instanceof SimpleMessageInterface ? $message->getMessage() : $message;
+        [$message, $context] = $this->middlewareProcessor->process($level, $message, $context);
+        $this->defaultLogger->log($level, $message, $context);
     }
 }

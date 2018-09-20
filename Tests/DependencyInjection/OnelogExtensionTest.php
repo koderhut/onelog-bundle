@@ -49,7 +49,7 @@ class OnelogExtensionTest extends TestCase
         $container->compile();
 
         $onelogDefinition = $container->findDefinition(OneLog::class);
-        $args = $onelogDefinition->getArgument(0);
+        $args = $onelogDefinition->getArgument(1);
 
         $this->assertEquals($args->getClass(), NullLogger::class);
     }

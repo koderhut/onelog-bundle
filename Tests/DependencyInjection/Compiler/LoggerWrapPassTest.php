@@ -30,7 +30,7 @@ class LoggerWrapPassTest extends TestCase
         $service   = $container->findDefinition(OneLog::class);
         $arguments = $service->getArguments();
 
-        $this->assertEquals(NullLogger::class, $arguments[0]->getClass());
+        $this->assertEquals(NullLogger::class, $arguments[1]->getClass());
     }
 
     /**
@@ -43,7 +43,7 @@ class LoggerWrapPassTest extends TestCase
         $service   = $container->findDefinition(OneLog::class);
         $arguments = $service->getArguments();
 
-        $this->assertEquals(NullLogger::class, $arguments[0]->getClass());
+        $this->assertEquals(NullLogger::class, $arguments[1]->getClass());
     }
 
     /**

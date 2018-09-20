@@ -4,9 +4,11 @@ namespace KoderHut\OnelogBundle\Tests;
 
 use KoderHut\OnelogBundle\Helper\NullLogger;
 use KoderHut\OnelogBundle\Helper\OneLogStatic;
+use KoderHut\OnelogBundle\MiddlewareProcessor;
 use KoderHut\OnelogBundle\LoggerAwareTrait;
 use KoderHut\OnelogBundle\OneLog;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -43,7 +45,7 @@ class LoggerAwareTraitTest extends TestCase
      */
     public function testObjectWillAlwaysReturnALoggerInstance()
     {
-        $onelog = new OneLog();
+        $onelog = new OneLog($this->getMockMiddlewareProcessor());
         OneLogStatic::setInstance($onelog);
 
         $instance = new class {
@@ -51,5 +53,19 @@ class LoggerAwareTraitTest extends TestCase
         };
 
         $this->assertInstanceOf(LoggerInterface::class, $instance->logger());
+    }
+
+    /**
+     * @return MiddlewareProcessor
+     */
+    private function getMockMiddlewareProcessor(): MiddlewareProcessor
+    {
+        $middlewareProcessor = $this->prophesize(MiddlewareProcessor::class);
+        $middlewareProcessor->process(Argument::any(), Argument::any(), Argument::any())->willReturn(function($args) {
+            print_r($args);
+            return $args;
+        });
+
+        return $middlewareProcessor->reveal();
     }
 }

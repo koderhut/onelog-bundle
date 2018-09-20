@@ -6,10 +6,26 @@
 >
 
     <services>
+        
         <service id="KoderHut\OnelogBundle\OneLog"  class="KoderHut\OnelogBundle\OneLog" public="true" lazy="true">
+            <argument type="service">
+                <service class="KoderHut\OnelogBundle\MiddlewareProcessor" public="false" />
+            </argument>
             <argument type="service">
                 <service class="KoderHut\OnelogBundle\Helper\NullLogger" public="false" />
             </argument>
+        </service>
+
+        <service id="KoderHut\OnelogBundle\Middleware\ContextProcessor"  class="KoderHut\OnelogBundle\Middleware\ContextProcessor" public="true" lazy="true">
+        </service>
+
+        <service id="KoderHut\OnelogBundle\Middleware\StackTraceProcessor"  class="KoderHut\OnelogBundle\Middleware\StackTraceProcessor" public="true" lazy="true">
+        </service>
+
+        <service id="KoderHut\OnelogBundle\Middleware\ExceptionCodeProcessor"  class="KoderHut\OnelogBundle\Middleware\ExceptionCodeProcessor" public="true" lazy="true">
+        </service>
+
+        <service id="KoderHut\OnelogBundle\MiddlewareProcessor"  class="KoderHut\OnelogBundle\MiddlewareProcessor" public="true" lazy="true">
         </service>
 
         <service id="KoderHut\OnelogBundle\Monolog\RequestIdProcessor" class="KoderHut\OnelogBundle\Monolog\RequestIdProcessor" public="false">

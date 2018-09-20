@@ -24,6 +24,6 @@ class LoggerWrapPass implements CompilerPassInterface
         }
 
         $oneLogDefinition = $container->findDefinition(OneLog::class);
-        $oneLogDefinition->replaceArgument(0, new Reference($loggerId));
+        $oneLogDefinition->replaceArgument(1, new Reference($loggerId));
     }
 }
