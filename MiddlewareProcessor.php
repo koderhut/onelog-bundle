@@ -2,7 +2,7 @@
 
 namespace KoderHut\OnelogBundle;
 
-use KoderHut\OneLogBundle\Middleware\MiddlewareInterface;
+use KoderHut\OnelogBundle\Middleware\MiddlewareInterface;
 
 /**
  * Class MiddlewareProcessor
@@ -19,7 +19,7 @@ class MiddlewareProcessor implements MiddlewareInterface
     /**
      * @param MiddlewareInterface $middleware
      */
-    private function registerMiddleware(MiddlewareInterface $middleware)
+    public function registerMiddleware(MiddlewareInterface $middleware)
     {
         $this->middlewares[] = $middleware;
     }
@@ -31,7 +31,7 @@ class MiddlewareProcessor implements MiddlewareInterface
      *
      * @return array
      */
-    public function process(string $level, $message, $context): array
+    public function process($level, $message, $context): array
     {
         foreach ($this->middlewares as $middleware) {
             [$message, $context] = $middleware->process($level, $message, $context);

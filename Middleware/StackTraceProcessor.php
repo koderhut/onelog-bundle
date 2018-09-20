@@ -3,6 +3,7 @@
 namespace KoderHut\OnelogBundle\Middleware;
 
 use KoderHut\OnelogBundle\ContextualInterface;
+use KoderHut\OnelogBundle\MiddlewareProcessor;
 
 /**
  * Class StackTraceProcessor
@@ -10,7 +11,7 @@ use KoderHut\OnelogBundle\ContextualInterface;
  * @author Joao Jacome <969041+joaojacome@users.noreply.github.com>
  */
 class StackTraceProcessor implements MiddlewareInterface
-{    
+{
     /**
      * @param string $level
      * @param mixed  $message
@@ -24,7 +25,6 @@ class StackTraceProcessor implements MiddlewareInterface
             $context = array_merge($context, [
                 'stack_trace' => $message->getTraceAsString(),
             ]);
-            $message = $message->getMessage();
         }
 
         return [$message, $context];

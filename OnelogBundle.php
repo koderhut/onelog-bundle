@@ -24,6 +24,12 @@ class OnelogBundle extends Bundle
             OneLogStatic::setInstance($onelogService);
             GlobalNamespaceRegister::register('\\OneLog', OneLogStatic::class);
         }
+
+        if (null !== ($middlewares = $this->container->getParameter('onelog.middlewares'))) {
+            foreach ($middlewares as $middleware) {
+                $this->container->get(MiddlewareProcessor::class)->registerMiddleware($this->container->get($middleware));
+            }
+        }
     }
 
     public function build(ContainerBuilder $container)

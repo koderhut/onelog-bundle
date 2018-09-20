@@ -5,11 +5,11 @@ namespace KoderHut\OnelogBundle\Middleware;
 use KoderHut\OnelogBundle\ContextualInterface;
 
 /**
- * Class ContextProcessor
+ * Class SimpleMessageProcessor
  *
  * @author Joao Jacome <969041+joaojacome@users.noreply.github.com>
  */
-class ContextProcessor implements MiddlewareInterface
+class SimpleMessageProcessor implements MiddlewareInterface
 {
     /**
      * @param string $level
@@ -20,8 +20,8 @@ class ContextProcessor implements MiddlewareInterface
      */
     public function process($level, $message, $context): array
     {
-        if ($message instanceof ContextualInterface) {
-            $context = array_merge($context, $message->getContext());
+        if ($message instanceof \Throwable) {
+            $message = $message->getMessage();
         }
 
         return [$message, $context];
