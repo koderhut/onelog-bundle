@@ -3,7 +3,6 @@
 namespace KoderHut\OnelogBundle\Tests;
 
 use KoderHut\OnelogBundle\Helper\OneLogStatic;
-use KoderHut\OnelogBundle\MiddlewareProcessor;
 use KoderHut\OnelogBundle\NamedLoggerInterface;
 use KoderHut\OnelogBundle\OneLog;
 use PHPUnit\Framework\TestCase;
@@ -31,7 +30,7 @@ class OneLogStaticTest extends TestCase
     public function setUp()
     {
         $mockDefaultLogger = $this->mockTestLogger('app', 'debug', ['test', []]);
-        $this->instance = new OneLog($this->getMockMiddlewareProcessor(), $mockDefaultLogger);
+        $this->instance = new OneLog($mockDefaultLogger);
         OneLogStatic::setInstance($this->instance);
     }
 
@@ -74,19 +73,6 @@ class OneLogStaticTest extends TestCase
         $this->expectException(\RuntimeException::class);
 
         OneLogStatic::instance();
-    }
-
-    /**
-     * @return MiddlewareProcessor
-     */
-    private function getMockMiddlewareProcessor(): MiddlewareProcessor
-    {
-        $middlewareProcessor = $this->prophesize(MiddlewareProcessor::class);
-        $middlewareProcessor->process(Argument::any(), Argument::any(), Argument::any())->will(function($args) {
-            return [$args[1], $args[2]];
-        });
-
-        return $middlewareProcessor->reveal();
     }
 
     /**

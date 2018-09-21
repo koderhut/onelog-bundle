@@ -4,7 +4,6 @@ namespace KoderHut\OnelogBundle\Helper;
 
 use KoderHut\OnelogBundle\ContextualInterface;
 
-
 /**
  * Trait ContextualTrait
  *
@@ -24,7 +23,7 @@ trait ContextualTrait
     {
         if (is_object($context) && $context instanceof ContextualInterface) {
             $context = $context->getContext();
-        } else if (is_object($context)) {
+        } else if (!is_array($context)) {
             throw new \InvalidArgumentException();
         }
 

@@ -9,7 +9,6 @@
         <service id="KoderHut\OnelogBundle\MiddlewareProcessor"  class="KoderHut\OnelogBundle\MiddlewareProcessor" public="true" lazy="true" />
 
         <service id="KoderHut\OnelogBundle\OneLog"  class="KoderHut\OnelogBundle\OneLog" public="true" lazy="true">
-            <argument type="service" id="KoderHut\OnelogBundle\MiddlewareProcessor" />
             <argument type="service">
                 <service class="KoderHut\OnelogBundle\Helper\NullLogger" public="false" />
             </argument>

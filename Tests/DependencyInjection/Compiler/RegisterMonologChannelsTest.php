@@ -38,7 +38,7 @@ class RegisterMonologChannelsTest extends TestCase
         $args             = $onelogDefinition->getArguments();
         $methodCalls      = $onelogDefinition->getMethodCalls();
 
-        $this->assertCount(2, $args);
+        $this->assertCount(1, $args);
         $this->assertCount(0, $methodCalls);
     }
 
@@ -58,7 +58,7 @@ class RegisterMonologChannelsTest extends TestCase
         $args             = $onelogDefinition->getArguments();
         $methodCalls      = $onelogDefinition->getMethodCalls();
 
-        $this->assertCount(2, $args);
+        $this->assertCount(1, $args);
         $this->assertCount(0, $methodCalls);
     }
 
@@ -77,7 +77,7 @@ class RegisterMonologChannelsTest extends TestCase
         $args             = $onelogDefinition->getArguments();
         $methodCalls      = $onelogDefinition->getMethodCalls();
 
-        $this->assertCount(2, $args);
+        $this->assertCount(1, $args);
         $this->assertCount(2, $methodCalls);
 
         foreach ($methodCalls as $key => $call) {

@@ -45,7 +45,7 @@ class LoggerAwareTraitTest extends TestCase
      */
     public function testObjectWillAlwaysReturnALoggerInstance()
     {
-        $onelog = new OneLog($this->getMockMiddlewareProcessor());
+        $onelog = new OneLog();
         OneLogStatic::setInstance($onelog);
 
         $instance = new class {
@@ -53,19 +53,5 @@ class LoggerAwareTraitTest extends TestCase
         };
 
         $this->assertInstanceOf(LoggerInterface::class, $instance->logger());
-    }
-
-    /**
-     * @return MiddlewareProcessor
-     */
-    private function getMockMiddlewareProcessor(): MiddlewareProcessor
-    {
-        $middlewareProcessor = $this->prophesize(MiddlewareProcessor::class);
-        $middlewareProcessor->process(Argument::any(), Argument::any(), Argument::any())->willReturn(function($args) {
-            print_r($args);
-            return $args;
-        });
-
-        return $middlewareProcessor->reveal();
     }
 }

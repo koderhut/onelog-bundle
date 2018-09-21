@@ -3,7 +3,6 @@
 namespace KoderHut\OnelogBundle\Tests;
 
 use KoderHut\OnelogBundle\Helper\NullLogger;
-use KoderHut\OnelogBundle\MiddlewareProcessor;
 use KoderHut\OnelogBundle\NamedLoggerInterface;
 use KoderHut\OnelogBundle\OneLog;
 use PHPUnit\Framework\TestCase;
@@ -25,7 +24,7 @@ class OneLogTest extends TestCase
      */
     public function testInstantiatingANullLoggerByDefault()
     {
-        $instance = new OneLog($this->getMockMiddlewareProcessor());
+        $instance = new OneLog();
 
         $loggers = $instance->loggers();
 
@@ -38,7 +37,7 @@ class OneLogTest extends TestCase
      */
     public function testInstantiatingWithMultiplePsrLogger()
     {
-        $instance = new OneLog($this->getMockMiddlewareProcessor(), new NullLogger(), new NullLogger());
+        $instance = new OneLog(new NullLogger(), new NullLogger());
 
         $loggers = $instance->loggers();
 
@@ -55,7 +54,7 @@ class OneLogTest extends TestCase
         $mockDefaultLogger = $this->prophesize(LoggerInterface::class);
         $mockDefaultLogger->log('debug','test', [])->shouldBeCalled()->willReturn(null);
 
-        $instance = new OneLog($this->getMockMiddlewareProcessor(), $mockDefaultLogger->reveal());
+        $instance = new OneLog($mockDefaultLogger->reveal());
 
         $this->assertCount(2, $instance->loggers());
         $this->assertNull($instance->debug('test', []));
@@ -69,7 +68,7 @@ class OneLogTest extends TestCase
         $mockLoggerDefault = $this->mockTestLogger('default', 'debug', ['test', []]);
         $mockLoggerApp     = $this->mockTestLogger('app', 'debug', ['test', []]);
 
-        $instance = new OneLog($this->getMockMiddlewareProcessor(), $mockLoggerDefault, $mockLoggerApp);
+        $instance = new OneLog($mockLoggerDefault, $mockLoggerApp);
         $instance->app->debug('test', []);
         $instance->default->debug('test', []);
     }
@@ -81,22 +80,9 @@ class OneLogTest extends TestCase
     {
         $this->expectException(\RuntimeException::class);
 
-        $instance = new OneLog($this->getMockMiddlewareProcessor());
+        $instance = new OneLog();
 
         $instance->test;
-    }
-
-    /**
-     * @return MiddlewareProcessor
-     */
-    private function getMockMiddlewareProcessor(): MiddlewareProcessor
-    {
-        $middlewareProcessor = $this->prophesize(MiddlewareProcessor::class);
-        $middlewareProcessor->process(Argument::any(), Argument::any(), Argument::any())->will(function($args) {
-            return [$args[1], $args[2]];
-        });
-
-        return $middlewareProcessor->reveal();
     }
 
     /**

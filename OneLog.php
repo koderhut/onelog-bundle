@@ -38,14 +38,11 @@ class OneLog implements LoggerInterface
     /**
      * OneLog constructor.
      *
-     * @param MiddlewareProcessor $middlewareProcessor
-     * @param LoggerInterface     $default
-     * @param LoggerInterface     ...$logger
+     * @param LoggerInterface $default
+     * @param LoggerInterface ...$logger
      */
-    public function __construct(MiddlewareProcessor $middlewareProcessor, LoggerInterface $default = null, LoggerInterface ...$logger)
+    public function __construct(LoggerInterface $default = null, LoggerInterface ...$logger)
     {
-        $this->middlewareProcessor = $middlewareProcessor;
-
         $this->defaultLogger = $default ?? new NullLogger();
         $this->registerLogger($this->defaultLogger, self::DEFAULT_LOGGER);
 
@@ -53,6 +50,14 @@ class OneLog implements LoggerInterface
         foreach ($logger as $loggerInstance) {
             $this->registerLogger($loggerInstance);
         }
+    }
+
+    /**
+     * @param MiddlewareProcessor $middlewareProcessor
+     */
+    public function setMiddlewareProcessor(MiddlewareProcessor $middlewareProcessor)
+    {
+        $this->middlewareProcessor = $middlewareProcessor;
     }
 
     /**
@@ -106,7 +111,10 @@ class OneLog implements LoggerInterface
      */
     public function log($level, $message, array $context = [])
     {
-        [$message, $context] = $this->middlewareProcessor->process($level, $message, $context);
+        if (null !== $this->middlewareProcessor) {
+            [$message, $context] = $this->middlewareProcessor->process($level, $message, $context);
+        }
+
         $this->defaultLogger->log($level, $message, $context);
     }
 }
