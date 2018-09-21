@@ -27,6 +27,7 @@ class OnelogExtension extends Extension
 
         $container->setParameter('onelog.logger_service', $config['logger_service']);
         $container->setParameter('onelog.register_global', $config['register_global']);
+        $container->setParameter('onelog.middlewares', $config['middlewares']);
         $container->setParameter('onelog.register_monolog_channels', $config['register_monolog_channels']);
         $container->setParameter('onelog.enable_request_id', $config['enable_request_id']);
     }

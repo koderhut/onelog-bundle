@@ -4,9 +4,11 @@ namespace KoderHut\OnelogBundle\Tests;
 
 use KoderHut\OnelogBundle\Helper\NullLogger;
 use KoderHut\OnelogBundle\Helper\OneLogStatic;
+use KoderHut\OnelogBundle\MiddlewareProcessor;
 use KoderHut\OnelogBundle\LoggerAwareTrait;
 use KoderHut\OnelogBundle\OneLog;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
 
 /**

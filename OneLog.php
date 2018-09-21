@@ -6,15 +6,17 @@ use KoderHut\OnelogBundle\Exceptions\LoggerNotFoundException;
 use KoderHut\OnelogBundle\Helper\NullLogger;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerTrait;
 
 /**
  * Class OneLog
  *
  * @author Denis-Florin Rendler <connect@rendler.me>
+ * @author Joao Jacome <969041+joaojacome@users.noreply.github.com>
  */
-class OneLog
+class OneLog implements LoggerInterface
 {
-    use PSRLoggerTrait;
+    use LoggerTrait;
 
     public const DEFAULT_LOGGER = 'default';
 
@@ -27,6 +29,11 @@ class OneLog
      * @var <array>LoggerInterface
      */
     private $loggers;
+
+    /**
+     * @var MiddlewareProcessor
+     */
+    private $middlewareProcessor;
 
     /**
      * OneLog constructor.
@@ -43,6 +50,14 @@ class OneLog
         foreach ($logger as $loggerInstance) {
             $this->registerLogger($loggerInstance);
         }
+    }
+
+    /**
+     * @param MiddlewareProcessor $middlewareProcessor
+     */
+    public function setMiddlewareProcessor(MiddlewareProcessor $middlewareProcessor)
+    {
+        $this->middlewareProcessor = $middlewareProcessor;
     }
 
     /**
@@ -87,5 +102,19 @@ class OneLog
         }
         
         $this->loggers[$loggerName] = $logger;
+    }
+
+    /**
+     * @param mixed $level
+     * @param mixed $message
+     * @param array $context
+     */
+    public function log($level, $message, array $context = [])
+    {
+        if (null !== $this->middlewareProcessor) {
+            [$message, $context] = $this->middlewareProcessor->process($level, $message, $context);
+        }
+
+        $this->defaultLogger->log($level, $message, $context);
     }
 }

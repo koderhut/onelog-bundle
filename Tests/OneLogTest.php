@@ -7,6 +7,7 @@ use KoderHut\OnelogBundle\NamedLoggerInterface;
 use KoderHut\OnelogBundle\OneLog;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerTrait;
 use Prophecy\Argument;
 
 /**
@@ -51,7 +52,7 @@ class OneLogTest extends TestCase
     public function testCallingPsrLoggerMethodsOnInstanceAreProxiedToDefaultLogger()
     {
         $mockDefaultLogger = $this->prophesize(LoggerInterface::class);
-        $mockDefaultLogger->debug('test', [])->shouldBeCalled()->willReturn(null);
+        $mockDefaultLogger->log('debug','test', [])->shouldBeCalled()->willReturn(null);
 
         $instance = new OneLog($mockDefaultLogger->reveal());
 
@@ -97,16 +98,12 @@ class OneLogTest extends TestCase
     {
         $logger = new class($loggerName, $method, $params, $this) implements NamedLoggerInterface, LoggerInterface
         {
+            use LoggerTrait;
+
             private $name;
             private $method;
             private $params;
             private $assert;
-
-            public function __call($method, $params)
-            {
-                $this->assert->assertEquals($this->method, $method);
-                $this->assert->assertEquals($this->params, $params);
-            }
 
             public function __construct($name, $method, $params, $assert)
             {
@@ -121,49 +118,10 @@ class OneLogTest extends TestCase
                 return $this->name;
             }
 
-            public function emergency($message, array $context = [])
-            {
-                $this->__call('', [$message, $context]);
-            }
-
-            public function alert($message, array $context = [])
-            {
-                $this->__call('', [$message, $context]);
-            }
-
-            public function critical($message, array $context = [])
-            {
-                $this->__call('', [$message, $context]);
-            }
-
-            public function error($message, array $context = [])
-            {
-                $this->__call('', [$message, $context]);
-            }
-
-            public function warning($message, array $context = [])
-            {
-                $this->__call('', [$message, $context]);
-            }
-
-            public function notice($message, array $context = [])
-            {
-                $this->__call('', [$message, $context]);
-            }
-
-            public function info($message, array $context = [])
-            {
-                $this->__call('', [$message, $context]);
-            }
-
-            public function debug($message, array $context = [])
-            {
-                $this->__call('debug', [$message, $context]);
-            }
-
             public function log($level, $message, array $context = [])
             {
-                $this->__call('log', [$message, $context]);
+                $this->assert->assertEquals($this->method, $level);
+                $this->assert->assertEquals($this->params, [$message, $context]);
             }
         };
 

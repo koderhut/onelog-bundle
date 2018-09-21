@@ -44,6 +44,7 @@ class ConfigurationTest extends TestCase
                     'register_global' => true,
                     'register_monolog_channels' => false,
                     'enable_request_id' => true,
+                    'middlewares' => [],
                 ],
             ],
             'default_configs' => [
@@ -53,6 +54,7 @@ class ConfigurationTest extends TestCase
                     'register_global' => false,
                     'register_monolog_channels' => false,
                     'enable_request_id' => true,
+                    'middlewares' => [],
                 ],
             ],
         ];

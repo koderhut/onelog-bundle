@@ -2,6 +2,8 @@
 
 namespace KoderHut\OnelogBundle\Helper;
 
+use KoderHut\OnelogBundle\ContextualInterface;
+
 /**
  * Trait ContextualTrait
  *
@@ -17,8 +19,14 @@ trait ContextualTrait
     /**
      * @inheritdoc
      */
-    public function setContext(array $context): self
+    public function setContext($context): self
     {
+        if (is_object($context) && $context instanceof ContextualInterface) {
+            $context = $context->getContext();
+        } else if (!is_array($context)) {
+            throw new \InvalidArgumentException();
+        }
+
         $this->contextualData = $context;
 
         return $this;

@@ -1,3 +1,6 @@
+# One Log ...
+to rule them all
+
 # Onelog Bundle
 This bundle will help with wrapping all monolog and other loggers in a Symfony app
 into a single logger entry point simplifying the logging needed in an app.
