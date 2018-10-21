@@ -1,5 +1,7 @@
-# One Log ...
-to rule them all
+[![Build Status](https://travis-ci.org/koderhut/onelog-bundle.svg?branch=master)](https://travis-ci.org/koderhut/onelog-bundle)
+[![Coverage Status](https://coveralls.io/repos/github/koderhut/onelog-bundle/badge.svg?branch=master)](https://coveralls.io/github/koderhut/onelog-bundle?branch=master)
+![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)
+![PHP from Travis config](https://img.shields.io/travis/php-v/symfony/symfony.svg)
 
 # Onelog Bundle
 This bundle will help with wrapping all monolog and other loggers in a Symfony app
