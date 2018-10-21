@@ -9,6 +9,7 @@ install:
 
 script:
     - ./vendor/bin/phpunit --coverage-clover ./tests/logs/clover.xml
+    - ./vendor/bin/phpstan analyze .
 
 after_script:
     - php vendor/bin/php-coveralls -v

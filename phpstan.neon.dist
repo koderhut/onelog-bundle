@@ -1,4 +1,5 @@
 parameters:
+    level: 1
     autoload_directories:
         - %currentWorkingDirectory%/
     excludes_analyse:

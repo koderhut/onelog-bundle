@@ -23,7 +23,7 @@
         "symfony/http-kernel": "~2.7|~3.3|~4.0",
         "monolog/monolog": "~1.22",
         "nyholm/symfony-bundle-test": "dev-master",
-        "satooshi/php-coveralls": "2.0.x-dev"
+        "php-coveralls/php-coveralls": "2.1.x-dev"
     },
     "license": "MIT",
     "minimum-stability": "dev",
