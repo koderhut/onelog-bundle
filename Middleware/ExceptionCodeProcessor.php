@@ -20,10 +20,15 @@ class ExceptionCodeProcessor implements MiddlewareInterface
      */
     public function process($level, $message, $context): array
     {
+        if ($message instanceof \Exception && $message->getPrevious() && $message->getPrevious() instanceof \Exception) {
+            [$previousMessage, $context] = $this->process($level, $message->getPrevious(), $context);
+        }
+
         if ($message instanceof \Throwable) {
             $context = array_merge($context, [
                 'code' => $message->getCode(),
             ]);
+            $context['codes'] = array_merge([$message->getCode()], $context['codes'] ?? []);
         }
 
         return [$message, $context];
