@@ -20,9 +20,18 @@ class ContextProcessor implements MiddlewareInterface
      */
     public function process($level, $message, $context): array
     {
+        if ($context instanceof ContextualInterface) {
+            $context = $context->getContext();
+        }
+
+        if ($message instanceof \Throwable && $message->getPrevious() && $message->getPrevious() instanceof \Throwable) {
+            [$previousMessage, $context] = $this->process($level, $message->getPrevious(), $context);
+        }
+
         if ($message instanceof ContextualInterface) {
             $context = array_merge($context, $message->getContext());
         }
+
 
         return [$message, $context];
     }
