@@ -71,7 +71,10 @@ class OneLog implements LoggerInterface
     public function __get($logger)
     {
         if (isset($this->loggers[$logger])) {
-            return $this->loggers[$logger];
+            $onelogWrapper = new self($this->loggers[$logger]);
+            $onelogWrapper->setMiddlewareProcessor($this->middlewareProcessor);
+
+            return $onelogWrapper;
         }
 
         throw new LoggerNotFoundException('Unable to find logger', ['logger' => $logger]);
